@@ -25,14 +25,10 @@ fn main() {
     };
     
     let reorder_sequence = |mut seq: Vec<i32>| -> Vec<i32> { 
-        let mut sub_set: HashMap<i32, Vec<i32>> = pre_reqs.iter().filter(|(k, _)| seq.contains(&k)).map(|(k, v)| (*k, v.clone())).collect();
-        for (_, v) in sub_set.iter_mut() {
-            v.retain(|&a| seq.contains(&a));
-        }
-    
+        let sub_set: HashMap<i32, usize> = pre_reqs.iter().filter(|(k, _)| seq.contains(k)).map(|(&k, v)| (k, v.iter().filter(|n| seq.contains(n)).count())).collect();    
         seq.sort_unstable_by(|a, b| {
-            let a = sub_set.get(a).map(|v| v.len()).unwrap_or(0);
-            let b = sub_set.get(b).map(|v| v.len()).unwrap_or(0);
+            let a = sub_set.get(a).unwrap_or(&0);
+            let b = sub_set.get(b).unwrap_or(&0);
             a.cmp(&b)
         });
         seq
