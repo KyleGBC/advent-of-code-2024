@@ -25,7 +25,8 @@ fn main() {
     };
     
     let reorder_sequence = |mut seq: Vec<i32>| -> Vec<i32> { 
-        let sub_set: HashMap<i32, usize> = pre_reqs.iter().filter(|(k, _)| seq.contains(k)).map(|(&k, v)| (k, v.iter().filter(|n| seq.contains(n)).count())).collect();    
+        let how_many_in_seq = |v: &Vec<_>| v.iter().filter(|m| seq.contains(m)).count();
+        let sub_set: HashMap<i32, usize> = seq.iter().map(|n| (*n, pre_reqs.get(n).map(how_many_in_seq).unwrap_or(0))).collect();
         seq.sort_unstable_by(|a, b| {
             let a = sub_set.get(a).unwrap_or(&0);
             let b = sub_set.get(b).unwrap_or(&0);
